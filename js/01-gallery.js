@@ -11,7 +11,7 @@ const saveItems = galleryItems.map(item =>
     data-source="${item.original}"
     alt="${item.description}"
     />
-    </a>S
+    </a>
 </li>`).join('')
 galleryList.insertAdjacentHTML('beforeend', saveItems)
 
@@ -20,10 +20,23 @@ galleryList.addEventListener('click', event => {
     if (event.target.classList.contains('gallery__image')) {
       const imageUrl = event.target.dataset.source;
       const imageDesc = event.target.getAttribute('alt');
-      const instance = basicLightbox.create(`<img src="${imageUrl}" alt="${imageDesc}">`);
+      const instance = basicLightbox.create(`<img src="${imageUrl}" alt="${imageDesc}">`,{
+        onShow: () => {
+          document.addEventListener('keydown', closeEscape)
+        },
+        onClose: () => {
+          document.removeEventListener('keydown', closeEscape);
+      }
+    });
       instance.show();
+      function closeEscape(event){
+        if(event.code === 'Escape'){
+          instance.close()
+        }
+      }
     }
 })
+
 
 
 console.log(galleryItems);
